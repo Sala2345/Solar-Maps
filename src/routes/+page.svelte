@@ -39,38 +39,55 @@
   let geometryLibrary: google.maps.GeometryLibrary;
   let mapsLibrary: google.maps.MapsLibrary;
   let placesLibrary: google.maps.PlacesLibrary;
+  let setupError: string | null = null;
   onMount(async () => {
-    // Load the Google Maps libraries.
-    const loader = new Loader({ apiKey: googleMapsApiKey });
-    const libraries = {
-      geometry: loader.importLibrary('geometry'),
-      maps: loader.importLibrary('maps'),
-      places: loader.importLibrary('places'),
-    };
-    geometryLibrary = await libraries.geometry;
-    mapsLibrary = await libraries.maps;
-    placesLibrary = await libraries.places;
+    if (!googleMapsApiKey) {
+      setupError = 'Add your Google Maps API key to an environment file before running the app.';
+      console.error(setupError);
+      return;
+    }
 
-    // Get the address information for the default location.
-    const geocoder = new google.maps.Geocoder();
-    const geocoderResponse = await geocoder.geocode({
-      address: defaultPlace.address,
-    });
-    const geocoderResult = geocoderResponse.results[0];
+    try {
+      // Load the Google Maps libraries.
+      const loader = new Loader({ apiKey: googleMapsApiKey });
+      const [geometry, maps, places] = await Promise.all([
+        loader.importLibrary('geometry'),
+        loader.importLibrary('maps'),
+        loader.importLibrary('places'),
+      ]);
+      geometryLibrary = geometry;
+      mapsLibrary = maps;
+      placesLibrary = places;
 
-    // Initialize the map at the desired location.
-    location = geocoderResult.geometry.location;
-    map = new mapsLibrary.Map(mapElement, {
-      center: location,
-      zoom: zoom,
-      tilt: 0,
-      mapTypeId: 'satellite',
-      mapTypeControl: false,
-      fullscreenControl: false,
-      rotateControl: false,
-      streetViewControl: false,
-      zoomControl: false,
-    });
+      // Get the address information for the default location.
+      const geocoder = new google.maps.Geocoder();
+      const geocoderResponse = await geocoder.geocode({
+        address: defaultPlace.address,
+      });
+      const geocoderResult = geocoderResponse.results?.[0];
+      if (!geocoderResult) {
+        throw new Error('Unable to resolve default location');
+      }
+
+      // Initialize the map at the desired location.
+      location = geocoderResult.geometry.location;
+      map = new mapsLibrary.Map(mapElement, {
+        center: location,
+        zoom: zoom,
+        tilt: 0,
+        mapTypeId: 'satellite',
+        mapTypeControl: false,
+        fullscreenControl: false,
+        rotateControl: false,
+        streetViewControl: false,
+        zoomControl: false,
+      });
+
+      setupError = null;
+    } catch (error) {
+      console.error('Failed to start Google Maps', error);
+      setupError = 'Unable to load Google Maps data. Check that the API key is valid and billing is enabled.';
+    }
   });
 </script>
 
@@ -82,6 +99,17 @@
   <!-- Side bar -->
   <aside class="flex-none md:w-96 w-80 p-2 pt-3 overflow-auto">
     <div class="flex flex-col space-y-2 h-full">
+      {#if setupError}
+        <div class="p-4 surface-variant outline-text rounded-lg space-y-3">
+          <p class="font-semibold">Configuration required</p>
+          <p class="text-sm">{setupError}</p>
+          <p class="text-sm">
+            Set <code class="font-mono">VITE_GOOGLE_MAPS_API_KEY</code> in an <code>.env</code> file or pass it in
+            your build command. The key needs the Maps JavaScript and Solar APIs enabled.
+          </p>
+        </div>
+      {/if}
+
       {#if placesLibrary && map}
         <SearchBar bind:location {placesLibrary} {map} initialValue={defaultPlace.name} />
       {/if}
