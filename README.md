@@ -25,15 +25,17 @@ To run the samples, you will need:
 
 ## Google Maps API key
 
-Once you have your API key, update the [`.env`](.env) file with your key.
+Once you have your API key, copy the [`.env.example`](.env.example) file to `.env` and update the
+`VITE_GOOGLE_MAPS_API_KEY` value. The key must have the **Maps JavaScript API** and **Solar API** enabled.
 
 ```sh
+cp .env.example .env
 VITE_GOOGLE_MAPS_API_KEY="YOUR_API_KEY"
 ```
 
 ## Running the app
 
-First, run `npm install` to install the required dependencies.
+First, run `npm ci` to install the required dependencies from the lockfile.
 
 ### Developer mode
 
@@ -41,8 +43,8 @@ To start the app in developer mode, this allows hot-reloads.
 This means that every time you change a file, the app reloads itself automatically.
 
 ```sh
-# Run in developer mode.
-npm run dev
+# Run in developer mode (use --host to access from another device).
+npm run dev -- --host
 ```
 
 ### Production mode
@@ -54,7 +56,29 @@ Starting in developer mode enables a lot of useful tools while developing, but f
 npm run build
 
 # Start the app.
+PORT=3000 npm run start
+```
+
+Make sure the `VITE_GOOGLE_MAPS_API_KEY` environment variable is available at build time so that the
+client bundle can access it:
+
+```sh
+VITE_GOOGLE_MAPS_API_KEY="YOUR_API_KEY" npm run build
 npm run start
+```
+
+### Running with Docker
+
+You can build a production-ready container image that packages the optimized SvelteKit build:
+
+```sh
+docker build \
+  --build-arg VITE_GOOGLE_MAPS_API_KEY="YOUR_API_KEY" \
+  -t solar-potential .
+
+docker run -p 3000:3000 \
+  -e VITE_GOOGLE_MAPS_API_KEY="YOUR_API_KEY" \
+  solar-potential
 ```
 
 ## Deploying to Cloud Run
