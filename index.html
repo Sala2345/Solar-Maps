@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Solar Maps – API starter (no npm required)</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <div class="pill">Zero-build static starter</div>
+        <h1>Solar Maps</h1>
+        <p class="lede">
+          A lightweight static landing page for Solar Maps. Drop in your API key, share
+          onboarding links, and ship without touching npm installs or build tooling.
+        </p>
+        <div class="meta">
+          <div class="meta-item">
+            <span class="label">API key</span>
+            <code id="api-key">not set</code>
+          </div>
+          <div class="meta-item">
+            <span class="label">Mode</span>
+            <span class="value">fully static (HTML + CSS + JS)</span>
+          </div>
+        </div>
+      </header>
+
+      <section class="grid">
+        <article class="card">
+          <h2>Set your key once</h2>
+          <p>
+            Open <code>config.js</code> and replace <code>apiKey</code> with your provider key. The
+            page reads that value at load time so you can confirm it is wired correctly.
+          </p>
+        </article>
+        <article class="card">
+          <h2>Works offline</h2>
+          <p>
+            No dependencies and no package manager required. Double-click
+            <code>index.html</code> or serve the folder with your favorite static server.
+          </p>
+        </article>
+        <article class="card">
+          <h2>Share quick links</h2>
+          <p>
+            Provide teammates with documentation links, support contacts, and any other
+            resources needed to explore solar potential data.
+          </p>
+        </article>
+        <article class="card">
+          <h2>Optional container</h2>
+          <p>
+            A tiny <code>nginx</code>-based Dockerfile is included so you can deploy this static site
+            anywhere without invoking a JavaScript toolchain.
+          </p>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="panel-content">
+          <div>
+            <h3>Getting started</h3>
+            <ol>
+              <li>Edit <code>config.js</code> to store your API key.</li>
+              <li>Open <code>index.html</code> in a browser (no build step required).</li>
+              <li>Share the page with teammates or deploy using the provided Dockerfile.</li>
+            </ol>
+          </div>
+          <div class="panel-links">
+            <a href="https://developers.google.com/maps/documentation/solar" target="_blank" rel="noreferrer"
+              >Solar API docs</a
+            >
+            <a href="https://cloud.google.com/maps-platform/terms" target="_blank" rel="noreferrer"
+              >Terms &amp; usage</a
+            >
+            <a href="mailto:support@example.com">Contact support</a>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">Built to keep Solar Maps onboarding simple and npm-free.</footer>
+    </main>
+
+    <script src="config.js"></script>
+    <script>
+      (function () {
+        const apiKey = window.SOLAR_MAPS_CONFIG?.apiKey || 'not set';
+        const apiKeyEl = document.getElementById('api-key');
+        if (apiKeyEl) {
+          apiKeyEl.textContent = apiKey;
+        }
+      })();
+    </script>
+  </body>
+</html>

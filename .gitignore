@@ -1,39 +1,14 @@
-# Build and Release Folders
-bin-debug/
-bin-release/
-[Oo]bj/
-[Bb]in/
-
-# Other files and folders
-.settings/
-
-# Executables
-*.swf
-*.air
-*.ipa
-*.apk
-
-# Node / SvelteKit
-node_modules/
-.svelte-kit/
-build/
-
-# Environment and tooling
-.env
-.env.*
-!.env.example
-.npmrc
-npm-debug.log*
-pnpm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Editor files
+# OS and editor files
 .DS_Store
 .idea/
 .vscode/
 
-# Testing and coverage
-coverage/
-.playwright-report/
+# Local environment
+.env
+.env.*
 
+# Logs
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
